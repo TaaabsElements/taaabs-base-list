@@ -1,0 +1,27 @@
+{
+  "name": "taaabs-base-list",
+  "version": "1.0.0",
+  "description": "A graphical element that displays the list of all existing bases on a kTBS.",
+  "keywords": [
+    "web-components",
+    "polymer",
+    "taaabs"
+  ],
+  "authors": [
+    "Rémi Casado"
+  ],
+//  "repository": {
+//    "type": "git",
+//    "url": "git://github.com/PolymerElements/iron-a11y-announcer.git"
+//  },
+  "main": "taaabs-base-list.html",
+//  "license": "http://polymer.github.io/LICENSE.txt",
+  "dependencies": {
+    "polymer": "polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "polymerelements/iron-component-page#^1.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "ignore": []
+}

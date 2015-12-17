@@ -1,0 +1,138 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="taaabs-base-list">
+  <template>
+    <style>
+      :host{
+        display: block;
+        width: 100%;
+      }
+      
+      :host > #bases{
+        width: 100%;
+        height: 20pt;
+      }
+    </style>
+    <select id="bases">
+    </select>           
+          
+  </template>
+
+  <script>
+      /* global Polymer */
+      
+      /**
+`<taaabs-base-list>` is a graphical componant that displays the list of all existing bases on one kTBS.
+
+Then the user can select one of these bases.
+
+An example, where `baseListId` is a string which contains the selected base, and `ktbsUrl` the URL of the kTBS:
+
+    <taaabs-base-list id="baseList" 
+                      ktbs-url="{{ktbsUrl}}"
+                      base="{{baseListId}}">
+    </taaabs-base-list>
+
+      */
+      Polymer({
+        is: 'taaabs-base-list',
+
+        properties: {
+          
+          /**
+          *URL of the kTBS.
+          * 
+          *@attribute ktbsUrl
+          *@type String
+          */
+          ktbsUrl: {
+            type: String,
+            notify: true
+          },
+          
+          /**
+          *Selected base.
+          *
+          *@attribute base
+          *@type Object
+          */ 
+		      base: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
+          },
+          
+          /**
+          *Set to **true** if the kTBS actually has at least one base.
+          *
+          *@attribute hasBase
+          *@type Boolean
+          */ 
+          hasBase: {
+            type: Boolean,
+            notify: true,
+            reflectToAttribute: true
+          },
+          
+          /**
+          *kTBS object.
+          *
+          *@attribute ktbs
+          *@type Object
+          */
+          ktbs: {
+            type: Object,
+            notify: true,
+          }
+          
+        },
+        
+        listeners: {
+          'bases.change': '_basesChanged',
+          'bases.focus': 'getBases',
+        },
+        
+        ready: function() {
+          // We get the ktbs object from the remote server.
+          this.ktbs = this.ktbs || new Samotraces.Ktbs.Ktbs(this.ktbsUrl);
+        },
+		
+        /**
+        *Display the list of all existing bases on the `ktbs`.
+        *
+        *@method getBases
+        */
+        getBases: function(){
+          var that = this;
+          this.ktbs.force_state_refresh({'_on_state_refresh_': true}, function(resource) {
+            that.listBases = that.ktbs.list_bases();
+            that.$.bases.innerHTML = "";
+            for(var i = 0; i < that.listBases.length; i++){
+              var option = document.createElement("option"); 
+              option.value = that.listBases[i];
+              option.textContent = that.listBases[i];
+              if(i === 0){
+                option.selected = true;
+                that.base = that.listBases[i];
+              }
+              that.$.bases.appendChild(option);
+            } 
+            that.hasBase = (that.listBases.length !== 0);
+          }, function (error) {
+            console.log('This kTBS doesn\'t exists.');
+            console.log(error);
+          }); 
+        },
+        
+        /**
+        *Changes `base` according to the new selected base.
+        *
+        *@method _basesChanged
+        */
+        _basesChanged: function(){
+          this.base = this.$.bases.options[this.$.bases.selectedIndex].value;
+        },
+    });
+  </script>
+
+</dom-module>
